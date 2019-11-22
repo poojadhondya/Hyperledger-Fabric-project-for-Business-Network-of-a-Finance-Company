@@ -1,0 +1,71 @@
+namespace org.pooja.ecommerce
+
+enum OrderState {
+  o ORDERED
+  o ACCEPTED
+  o PROVIDER_PREPARATION
+  o FINANCED
+  o SHIPPED
+}
+
+
+asset Order identified by orderID {
+    o String orderID
+    o String product
+    o String productQuantity
+    o String orderDescription
+    o OrderState status
+    --> Buyer buyer 
+    --> Seller seller
+    --> Provider provider optional
+    --> Financier financier optional
+    --> Shipper shipper optional
+}	
+
+participant Buyer identified by buyerID {
+    o String buyerID
+    o String firstName
+    o String lastName
+}
+
+participant Seller identified by sellerID {
+    o String sellerID
+    o String firstName
+    o String lastName
+}
+
+participant Provider identified by providerID {
+    o String providerID
+    o String firstName
+    o String lastName
+    o String productInfo
+}
+
+participant Shipper identified by shipmentID {
+    o String shipmentID
+    o String firstName
+    o String lastName
+}
+
+participant Financier identified by financierID {
+    o String financierID
+    o String firstName
+    o String lastName
+}
+
+transaction createOrder {
+    o String orderID
+    o String product
+    o String productQuantity
+    o String orderDescription
+    --> Buyer buyer
+    --> Seller seller
+
+}
+
+
+transaction acceptOrder {
+    o String orderID
+    --> Order order
+}
+
