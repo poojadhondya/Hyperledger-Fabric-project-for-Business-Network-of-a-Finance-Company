@@ -1,0 +1,46 @@
+/**
+* @param {org.pooja.ecommerce.createOrder} txn - the trade to be processed
+* @transaction
+*/
+function createOrder(txn) {
+       
+  	   var factory = getFactory();
+       var NS = 'org.pooja.ecommerce'
+       var assest_details = factory.newResource(NS,'Order',txn.orderID);
+
+  	   assest_details.orderID = txn.orderID
+       assest_details.product = txn.product
+       assest_details.productQuantity = txn.productQuantity
+       assest_details.orderDescription = txn.orderDescription
+  	   assest_details.buyer = txn.buyer
+  	   assest_details.seller = txn.seller
+  	   assest_details.status = "ORDERED"
+                     
+  	   return getAssetRegistry('org.pooja.ecommerce.Order')
+		.then(function (assetRegistry) {
+		return assetRegistry.add(assest_details);
+	});
+}
+
+/**
+* @param {org.pooja.ecommerce.acceptOrder} txn - the trade to be processed
+* @transaction
+*/
+function acceptOrder(txn) {
+       
+  	   var factory = getFactory();
+       var NS = 'org.pooja.ecommerce'
+       var orderID = txn.orderID;
+             
+  	   return getAssetRegistry('org.pooja.ecommerce.Order')
+		.then(function (orderRegistry) {
+			return orderRegistry.exists(orderID);})
+         .then (function(output) {
+         	return getAssetRegistry( 'org.pooja.ecommerce.Order')
+          .then(function (orderRegistry) {
+             txn.order.status = "ACCEPTED";
+             return orderRegistry.update(txn.order);
+           })
+       })
+}
+
